@@ -24,18 +24,23 @@ app.listen(8000);
 io.on('connection', function(socket){
 
 
- 	socket.on('connexion', function(name){
+ 	socket.on('connexion', function(name,x,y){
+      
+      console.log(name + " c'est connecter ");
+      users.push({id:socket.id,name:name});
+      console.log(Object.keys(users));
+      socket.username = name;
+      console.log("socket id tab de " + socket.username + " es egal a " + socket.idtab);
+      io.emit('joueur',users);
+      socket.x = x;
+      socket.y = y;
+      socket.pos = "" + x + "" + y + "";
+      socket.join(socket.pos);
+     var ok = io.sockets.connected[socket.id].username;
+     console.log(ok);
 
-     console.log(name + " c'est connecter ");
-     users.push({id:socket.id,name:name});
-     console.log(users);
-     socket.username = name;
-     socket.idtab = users.length - 1;
-     console.log("socket id tab de " + socket.username + " es egal a " + socket.idtab);
-     io.emit('joueur',users);
-     
-     var allConnectedClients = Object.keys(io.sockets.connected);
-console.log("allconnected client " + allConnectedClients);
+ 
+
   });
 
 
@@ -46,10 +51,79 @@ console.log("allconnected client " + allConnectedClients);
 
   });
 
-  socket.on('deplacement', function(x,z){
+  socket.on('deplacement', function(x,y,dir,id,nom,pts,kill,vie,avatar){
 
-    socket.z = z;
+    if(socket.x != x || socket.y != y){
+      socket.leave(socket.pos);
+    }
+
+    if(dir == "gauche"){
+      /* vers le moin*/
+      io.to("" + (socket.x+2) + "" + (socket.y-1) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y+1) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y+2) + "").emit('sort',id);
+
+      io.to("" + (socket.x-3) + "" + (socket.y-1) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-3) + "" + (socket.y-2) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-3) + "" + (socket.y) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-3) + "" + (socket.y+1) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-3) + "" + (socket.y+2) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+
+    }
+
+    else if(dir == "droite"){
+      io.to("" + (socket.x-2) + "" + (socket.y-1) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y+1) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y+2) + "").emit('sort',id);
+
+      io.to("" + (socket.x+3) + "" + (socket.y-1) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+3) + "" + (socket.y-2) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+3) + "" + (socket.y) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+3) + "" + (socket.y+1) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+3) + "" + (socket.y+2) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+    }
+
+    else if(dir == "haut"){
+
+      /* en moin*/
+      io.to("" + (socket.x-1) + "" + (socket.y+2) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y+2) + "").emit('sort',id);
+      io.to("" + (socket.x) + "" + (socket.y+2) + "").emit('sort',id);
+      io.to("" + (socket.x+1) + "" + (socket.y+2) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y+2) + "").emit('sort',id);
+
+      io.to("" + (socket.x-1) + "" + (socket.y-3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-2) + "" + (socket.y-3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x) + "" + (socket.y-3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+1) + "" + (socket.y-3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+2) + "" + (socket.y-3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+    }
+
+    else if(dir == "bas"){
+
+      io.to("" + (socket.x-1) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x-2) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x+2) + "" + (socket.y-2) + "").emit('sort',id);
+      io.to("" + (socket.x+1) + "" + (socket.y-2) + "").emit('sort',id);
+
+      io.to("" + (socket.x-1) + "" + (socket.y+3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x-2) + "" + (socket.y+3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x) + "" + (socket.y+3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+1) + "" + (socket.y+3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+      io.to("" + (socket.x+2) + "" + (socket.y+3) + "").emit('entre',id,nom,pts,kill,vie,avatar);
+    }
+    
+    socket.x = x;
     socket.y = y;
+    socket.pos = "" + x + "" + y + "";
+    socket.join(socket.pos);
+    console.log(socket.pos);
+    io.to(socket.pos).emit('mess',"salut toi");
 
   });
 
@@ -72,5 +146,3 @@ console.log("allconnected client " + allConnectedClients);
 
 
 });
-
-
