@@ -19,7 +19,7 @@ var options = {
 var app = https.createServer(options);
 var io = require('socket.io').listen(app);
 app.listen(8000);
-
+console.log('serveur demarer')
 
 io.on('connection', function(socket){
 
