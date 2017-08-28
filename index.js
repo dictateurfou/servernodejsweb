@@ -11,9 +11,9 @@ var numero;
 
 
 var options = {
-  key: fs.readFileSync('../../../etc/letsencrypt/live/websocket.survive-in-hell.fr/privkey.pem'),
-  cert: fs.readFileSync('../../../etc/letsencrypt/live/websocket.survive-in-hell.fr/cert.pem'),
-  ca: fs.readFileSync('../../../etc/letsencrypt/live/websocket.survive-in-hell.fr/chain.pem')
+  key: fs.readFileSync('../etc/letsencrypt/live/websocket.survive-in-hell.fr/privkey.pem'),
+  cert: fs.readFileSync('../etc/letsencrypt/live/websocket.survive-in-hell.fr/cert.pem'),
+  ca: fs.readFileSync('../etc/letsencrypt/live/websocket.survive-in-hell.fr/chain.pem')
 };
 
 var app = https.createServer(options);
